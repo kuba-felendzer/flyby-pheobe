@@ -1,109 +1,31 @@
-// main.c - Flyby Pheobe source - Written by Kuba Felendzer 2022
+#include <raylib.h>
 
-//! code is uncommented because this is just a test for SDL being set up on my developement machine.
+int main(void)
+{
+    const int WIDTH = 800;
+    const int HEIGHT = 450;
 
-#include <SDL2/SDL.h>
-#include <stdio.h>
-#include <stdlib.h>
+    // Initialization
+    InitWindow(WIDTH, HEIGHT, "raylib [core] example - basic window");
 
-#define QUITKEY SDLK_ESCAPE
-#define WIDTH 800
-#define HEIGHT 800
+    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
 
-SDL_Window* screen = NULL;
-SDL_Renderer* renderer;
-SDL_Event event;
-SDL_Rect source, destination, dst;
+    // Main game loop
+    while (!WindowShouldClose())    // Detect window close button or ESC key
+    {
+        // Update
 
-int keypressed;
-int rectCount = 0;
+        // Draw
+        BeginDrawing();
 
-int dr_ret = -1;
+            ClearBackground(BLUE);
 
-void setup() {
-	srand((unsigned int) time(NULL));
+            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
-	SDL_Init(SDL_INIT_EVERYTHING);
+        EndDrawing();
+    }
 
-	SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, SDL_WINDOW_SHOWN, &screen, &renderer);
+    CloseWindow();        // Close window and OpenGL context
 
-	if (!screen) {
-		return 1;
-	}
-
-	SDL_SetWindowTitle(screen, "SDL Initial Test");
+    return 0;
 }
-
-void cleanup() {
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(screen);
-
-	SDL_Quit();
-	exit(0);
-}
-
-void draw_rectangle() {
-	if(rectCount == 10000) {
-		SDL_RenderPresent(renderer);
-		
-		SDL_SetWindowTitle(screen, "SDL Initial Test - Done!");
-
-		dr_ret = 0;
-	}
-
-	SDL_Rect rect;
-
-	SDL_SetRenderDrawColor(renderer, rand() % 256, rand() % 256, rand() % 256, 255);
-
-	rect.h = 200;
-	rect.w = 200;
-	rect.y = rand() % (HEIGHT - rect.h);
-
-	SDL_RenderFillRect(renderer, &rect);
-
-	rectCount++;
-
-	dr_ret = rectCount;
-}
-
-void gameloop() {
-	int game_running = 1;
-
-	while(game_running) {
-		if(dr_ret != 0) draw_rectangle();
-
-		while(SDL_PollEvent(&event)) {
-			switch(event.type) {
-				case SDL_KEYDOWN:
-					keypressed = event.key.keysym.sym;
-
-					if (keypressed == QUITKEY) {
-						game_running = 0;
-						break;
-					}
-
-					break;
-
-				case SDL_QUIT:
-					game_running = 0;
-					break;
-
-				case SDL_KEYUP:
-					break;
-			}
-		}
-	}
-}
-
-int main(void) {
-	setup();
-	gameloop();
-	cleanup();
-
-	return 0;
-}
-		
-
-
-
-	
